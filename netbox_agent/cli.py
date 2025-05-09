@@ -4,12 +4,32 @@ import netbox_agent.dmidecode as dmidecode
 from netbox_agent.config import config
 from netbox_agent.config import netbox_instance as nb
 from netbox_agent.logging import logging  # NOQA
+from netbox_agent.misc import is_tool
 from netbox_agent.vendors.dell import DellHost
 from netbox_agent.vendors.generic import GenericHost
 from netbox_agent.vendors.hp import HPHost
 from netbox_agent.vendors.qct import QCTHost
 from netbox_agent.vendors.supermicro import SupermicroHost
 from netbox_agent.virtualmachine import VirtualMachine, is_vm
+
+REQUIRED_TOOLS = {
+    "dmidecode": "Hardware information gathering",
+    "ipmitool": "IPMI interface",
+    "ethtool": "Network interface information",
+    "lshw": "Hardware information gathering"
+}
+
+def check_dependencies():
+    missing_tools = []
+    for tool, description in REQUIRED_TOOLS.items():
+        if not is_tool(tool):
+            missing_tools.append(f"{tool} ({description})")
+    
+    if missing_tools:
+        logging.error("Missing required tools:")
+        for tool in missing_tools:
+            logging.error(f"- {tool}")
+        sys.exit(1)
 
 MANUFACTURERS = {
     "Dell Inc.": DellHost,
@@ -21,6 +41,8 @@ MANUFACTURERS = {
 
 
 def run(config):
+    check_dependencies()
+    
     dmi = dmidecode.parse()
 
     if config.virtual.enabled or is_vm(dmi):
