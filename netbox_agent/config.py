@@ -146,6 +146,11 @@ def get_config():
         "--force-disk-refresh", action="store_true", help="Forces disks detection reprocessing"
     )
     p.add_argument("--dump-disks-map", help="File path to dump physical/virtual disks map")
+    p.add_argument(
+        "--device.device_type",
+        default=None,
+        help="Override automatically detected device type",
+    )
 
     options = p.parse_args()
     return options
