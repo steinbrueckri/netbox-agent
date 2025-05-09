@@ -1,53 +1,64 @@
+# Netbox Connection Settings
 netbox:
- url: 'http://netbox.internal.company.com'
- token: supersecrettoken
- # uncomment to disable ssl verification
- # ssl_verify: false
+  url: 'http://netbox.internal.company.com'
+  token: 'your-api-token-here'
+  # Optional: Disable SSL verification
+  # ssl_verify: false
+  # Optional: Use system CA certificates
+  # ssl_ca_certs_file: /etc/ssl/certs/ca-certificates.crt
 
+# Network Configuration
 network:
-  ignore_interfaces: "(dummy.*|docker.*)"
-  ignore_ips: (127\.0\.0\..*)
-  # enable auto-cabling
+  # Regex for interfaces to ignore
+  ignore_interfaces: "(dummy.*|docker.*|lo.*|veth.*)"
+  # Regex for IP addresses to ignore
+  ignore_ips: "(127\.0\.0\..*|169\.254\..*)"
+  # Enable LLDP for automatic cable detection
   lldp: true
+  # Optional: NIC identification method (name or mac)
+  # nic_id: "name"
+  # Optional: Gather IPMI information
+  # ipmi: true
 
-#
-# You can use these to change the roles.
-#
-#device:
-# chassis_role: "Server Chassis"
-# blade_role: "Blade"
-# server_role: "Server"
-# tags: server, blade, ,just a comma,delimited,list
-# custom_fields: field1=value1,field2=value2
-#
-#
-# Use this to set the tenant
-#
+# Device Settings
+device:
+  # Optional: Override automatically detected device type
+  device_type: "AX42"
+  # Platform (operating system)
+  # platform: "linux"
+  # Optional: Roles for different device types
+  # chassis_role: "Server Chassis"
+  # blade_role: "Blade"
+  server_role: "Server"
+  # Optional: Tags (comma-separated list)
+  # tags: "production,datacenter,server"
+  # Optional: Custom fields
+  # custom_fields: "environment=production,service_level=gold"
+
+# Location Information
+# Simple string version
+datacenter_location: "DC23"
+rack_location: "RACK42"
+
+# Optional: Advanced location configuration with drivers
+#datacenter_location:
+#  driver: "file"
+#  file: "/etc/datacenter"
+#  regex: "^(?P<datacenter>[A-Za-z0-9]+)"
+
+# Optional: Tenant Configuration
 #tenant:
-# driver: "file:/tmp/tenant"
-# regex: "(.*)"
+#  driver: "file:/tmp/tenant"
+#  regex: "(.*)"
 
-datacenter_location:
- driver: "cmd:cat /etc/qualification | tr [A-Z] [a-z]"
- regex: "datacenter: (?P<datacenter>[A-Za-z0-9]+)"
-# driver: 'cmd:lldpctl'
-# regex: 'SysName: .*\.([A-Za-z0-9]+)'
-#
-# driver: "file:/tmp/datacenter"
-# regex: "(.*)"
+# Optional: Virtualization Settings
+#virtual:
+#  enabled: true
+#  cluster_name: "prod-cluster"
+#  hypervisor: false
 
-rack_location:
-# driver: 'cmd:lldpctl'
-# match SysName: sw-dist-a1.dc42
-# regex: 'SysName:[ ]+[A-Za-z]+-[A-Za-z]+-([A-Za-z0-9]+)'
-#
-# driver: "file:/tmp/datacenter"
-# regex: "(.*)"
-
-# Some servers dont report the slot, since most people put it in the hostname
-# here's a way to extract it and maintain correct slot location in Netbox
-# slot_location:
-#   driver: 'cmd:hostname'
-#   regex: '.*-(\d+)'
-
+# Optional: Hardware Inventory
 inventory: true
+
+# Optional: Process extended disk attributes
+#process_virtual_drives: true

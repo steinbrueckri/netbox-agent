@@ -58,6 +58,11 @@ class ServerBase:
         return nb_tenant
 
     def get_datacenter(self):
+        # Check if datacenter_location is a simple string
+        if isinstance(config.datacenter_location, str):
+            return config.datacenter_location
+        
+        # Otherwise use the existing location detection logic
         dc = Datacenter()
         return dc.get()
 
@@ -120,6 +125,11 @@ class ServerBase:
         return update
 
     def get_rack(self):
+        # Check if rack_location is a simple string
+        if isinstance(config.rack_location, str):
+            return config.rack_location
+        
+        # Otherwise use the existing location detection logic
         rack = Rack()
         return rack.get()
 
@@ -269,9 +279,13 @@ class ServerBase:
 
     def _netbox_create_server(self, datacenter, tenant, rack):
         device_role = get_device_role(config.device.server_role)
-        device_type = get_device_type(self.get_product_name())
+        device_type = get_device_type(
+            self.get_product_name(),
+            config.device.device_type if hasattr(config.device, 'device_type') else None
+        )
         if not device_type:
             raise Exception('Chassis "{}" doesn\'t exist'.format(self.get_chassis()))
+        
         serial = self.get_service_tag()
         hostname = self.get_hostname()
         logging.info(
