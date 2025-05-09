@@ -17,7 +17,6 @@ MANUFACTURERS = {
     "HPE": HPHost,
     "Supermicro": SupermicroHost,
     "Quanta Cloud Technology Inc.": QCTHost,
-    "Generic": GenericHost,
 }
 
 
@@ -36,10 +35,8 @@ def run(config):
                 "virtual.cluster_name parameter is mandatory because it's a hypervisor"
             )
         manufacturer = dmidecode.get_by_type(dmi, "Chassis")[0].get("Manufacturer")
-        try:
-            server = MANUFACTURERS[manufacturer](dmi=dmi)
-        except KeyError:
-            server = GenericHost(dmi=dmi)
+        server_class = MANUFACTURERS.get(manufacturer, GenericHost)
+        server = server_class(dmi=dmi)
 
     if version.parse(nb.version) < version.parse("3.7"):
         print("netbox-agent is not compatible with Netbox prior to version 3.7")
