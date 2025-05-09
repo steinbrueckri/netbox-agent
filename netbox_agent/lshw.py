@@ -13,12 +13,14 @@ class LSHW:
 
         data = subprocess.getoutput("lshw -quiet -json")
         json_data = json.loads(data)
+        
         # Starting from version 02.18, `lshw -json` wraps its result in a list
         # rather than returning directly a dictionary
         if isinstance(json_data, list):
             self.hw_info = json_data[0]
         else:
             self.hw_info = json_data
+
         self.info = {}
         self.memories = []
         self.interfaces = []
@@ -26,11 +28,21 @@ class LSHW:
         self.power = []
         self.disks = []
         self.gpus = []
-        self.vendor = self.hw_info["vendor"]
-        self.product = self.hw_info["product"]
-        self.chassis_serial = self.hw_info["serial"]
-        self.motherboard_serial = self.hw_info["children"][0].get("serial", "No S/N")
-        self.motherboard = self.hw_info["children"][0].get("product", "Motherboard")
+
+        # Safe access to hardware information with default values
+        self.vendor = self.hw_info.get("vendor", "Unknown Vendor")
+        self.product = self.hw_info.get("product", "Unknown Product") 
+        self.chassis_serial = self.hw_info.get("serial", "No Serial Number")
+
+        # Safe access to motherboard information
+        children = self.hw_info.get("children", [])
+        if children and len(children) > 0:
+            first_child = children[0]
+            self.motherboard_serial = first_child.get("serial", "No S/N")
+            self.motherboard = first_child.get("product", "Motherboard")
+        else:
+            self.motherboard_serial = "No S/N"
+            self.motherboard = "Motherboard"
 
         for k in self.hw_info["children"]:
             if k["class"] == "power":

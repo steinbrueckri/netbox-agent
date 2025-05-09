@@ -20,7 +20,12 @@ def get_device_role(role):
     return device_role
 
 
-def get_device_type(type):
+def get_device_type(type, config_type=None):
+    if config_type:
+        device_type = nb.dcim.device_types.get(model=config_type)
+        if device_type is not None:
+            return device_type
+            
     device_type = nb.dcim.device_types.get(model=type)
     if device_type is None:
         raise Exception('DeviceType "{}" does not exist, please create it'.format(type))
