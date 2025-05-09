@@ -6,19 +6,19 @@ The goal is to generate an existing infrastructure on Netbox and have the abilit
 
 # Features
 
-* Create virtual machines, servers, chassis and blade through standard tools (`dmidecode`)
-* Create physical, bonding and vlan network interfaces with IPs (IPv4 & IPv6)
-* Create IPMI interface if found
-* Create or get existing VLAN and associate it to interfaces
-* Generic ability to guess datacenters and rack location through drivers (`cmd` and `file` and custom ones)
-* Update existing `Device` and `Interface`
-* Handle blade moving (new slot, new chassis)
-* Handle blade GPU expansions
-* Automatic cabling (server's interface to switch's interface) using lldp
-* Local inventory using `Inventory Item` for CPU, GPU, RAM, RAID cards, physical disks (behind raid cards)
-* PSUs creation and power consumption reporting (based on vendor's tools)
-* Associate hypervisor devices to the virtualization cluster
-* Associate virtual machines to the hypervisor device
+- Create virtual machines, servers, chassis and blade through standard tools (`dmidecode`)
+- Create physical, bonding and vlan network interfaces with IPs (IPv4 & IPv6)
+- Create IPMI interface if found
+- Create or get existing VLAN and associate it to interfaces
+- Generic ability to guess datacenters and rack location through drivers (`cmd` and `file` and custom ones)
+- Update existing `Device` and `Interface`
+- Handle blade moving (new slot, new chassis)
+- Handle blade GPU expansions
+- Automatic cabling (server's interface to switch's interface) using lldp
+- Local inventory using `Inventory Item` for CPU, GPU, RAM, RAID cards, physical disks (behind raid cards)
+- PSUs creation and power consumption reporting (based on vendor's tools)
+- Associate hypervisor devices to the virtualization cluster
+- Associate virtual machines to the hypervisor device
 
 # Requirements
 
@@ -36,6 +36,7 @@ The goal is to generate an existing infrastructure on Netbox and have the abilit
 - lshw
 
 ## Inventory requirement
+
 - hpassacli
 - storcli
 - omreport
@@ -72,10 +73,11 @@ INFO:root:Create new IP 10.191.122.10/24 on IPMI
 ```
 
 If you need, you can update only specific informations like:
-* Network
-* Inventory
-* Location
-* PSUs
+
+- Network
+- Inventory
+- Location
+- PSUs
 
 ```
 # ip a add 42.42.42.43/24 dev enp1s0f1
@@ -168,7 +170,6 @@ Each vendor class has a `is_blade` method which is later used for `Device` creat
 
 The `get_blade_slot` method return the name of the `Device Bay`.
 
-
 Certain vendors don't report the blade slot in `dmidecode`, so we can use the `slot_location` regex feature of the configuration file.
 
 Some blade servers can be equipped with additional hardware using expansion blades, next to the processing blade, such as GPU expansion, or drives bay expansion. By default, the hardware from the expnasion is associated with the blade server itself, but it's possible to register the expansion as its own device using the `--expansion-as-device` command line parameter, or by setting `expansion_as_device` to `true` in the configuration file.
@@ -200,7 +201,6 @@ To force the reprocessing of the disks extended attributes, the `--force-disk-re
 
 It is possible to dump the physical/virtual disks map on the filesystem under the JSON notation to ease or automate disks management. The file path has to be provided using the `--dump-disks-map` command line parameter.
 
-
 ## Anycast IP
 
 The default behavior of the agent is to assign an interface to an IP.
@@ -214,72 +214,72 @@ Tested on:
 
 ## Virtual Machines
 
-* Hyper-V
-* VMWare
-* VirtualBox
-* AWS
-* GCP
+- Hyper-V
+- VMWare
+- VirtualBox
+- AWS
+- GCP
 
 ## [Dell Inc.](https://github.com/Solvik/netbox-agent/blob/master/netbox_agent/vendors/dell.py)
 
 ### Blades
 
-* PowerEdge MX7000
-* PowerEdge M1000e (your `DeviceType` should have slots named `Slot 01` and so on)
-* PowerEdge MX740c
-* PowerEdge M640
-* PowerEdge M630
-* PowerEdge M620
-* PowerEdge M610
+- PowerEdge MX7000
+- PowerEdge M1000e (your `DeviceType` should have slots named `Slot 01` and so on)
+- PowerEdge MX740c
+- PowerEdge M640
+- PowerEdge M630
+- PowerEdge M620
+- PowerEdge M610
 
 ### Pizzas
 
-* DSS7500
+- DSS7500
 
 ## [HP / HPE](https://github.com/Solvik/netbox-agent/blob/master/netbox_agent/vendors/hp.py)
 
 ### Blades
 
-* HP BladeSystem c7000 Enclosure G2 / G3 (your `DeviceType` should have slots named `Bay 1` and so on)
-* HP ProLiant BL460c Gen8
-* HP ProLiant BL460c Gen9
-* HP ProLiant BL460c Gen10
-* HP ProLiant BL460c Gen10 Graphics Exp its expansion HP ProLiant BL460c Graphics Expansion Blade
-* HP Moonshot 1500 Enclosure (your `DeviceType` should have slots batch create with `Bay c[1-45n1]`) with HP ProLiant m750, m710x, m510 Server Cartridge
+- HP BladeSystem c7000 Enclosure G2 / G3 (your `DeviceType` should have slots named `Bay 1` and so on)
+- HP ProLiant BL460c Gen8
+- HP ProLiant BL460c Gen9
+- HP ProLiant BL460c Gen10
+- HP ProLiant BL460c Gen10 Graphics Exp its expansion HP ProLiant BL460c Graphics Expansion Blade
+- HP Moonshot 1500 Enclosure (your `DeviceType` should have slots batch create with `Bay c[1-45n1]`) with HP ProLiant m750, m710x, m510 Server Cartridge
 
 ### Pizzas
 
-* ProLiant DL380p Gen8
-* ProLiant SL4540 Gen8
-* ProLiant SL4540 Gen9
-* ProLiant XL450 Gen10
+- ProLiant DL380p Gen8
+- ProLiant SL4540 Gen8
+- ProLiant SL4540 Gen9
+- ProLiant XL450 Gen10
 
 ## [Supermicro](https://github.com/Solvik/netbox-agent/blob/master/netbox_agent/vendors/supermicro.py)
 
 ### Blades
 
-* SBI-* and SBA-* should be supported, but I need dmidecode output example to support automatic blade location
+- SBI-*and SBA-* should be supported, but I need dmidecode output example to support automatic blade location
 
 ### Pizzas
 
-* SSG-6028R
-* SYS-6018R
+- SSG-6028R
+- SYS-6018R
 
 ## [QCT](https://github.com/Solvik/netbox-agent/blob/master/netbox_agent/vendors/qct.py)
 
 ### Blades
 
-* QuantaMicro X10E-9N
+- QuantaMicro X10E-9N
 
 ### Pizzas
 
-* Nothing ATM, feel free to send me a dmidecode or make a PR!
+- Nothing ATM, feel free to send me a dmidecode or make a PR!
 
 # Known limitations
 
-* The project is only compatible with Linux.
+- The project is only compatible with Linux.
 Since it uses `ethtool` and parses `/sys/` directory, it's not compatible with *BSD distributions.
-* Netbox `>=2.6.0,<=2.6.2` has a caching problem ; if the cache lifetime is too high, the script can get stale data after modification.
+- Netbox `>=2.6.0,<=2.6.2` has a caching problem ; if the cache lifetime is too high, the script can get stale data after modification.
 We advise to set `CACHE_TIME` to `0`.
 
 # Developing
@@ -293,6 +293,7 @@ If you want to run the agent while adding features or just for debugging purpose
 ```
 
 On a personal note, I use the docker image from [netbox-community/netbox-docker](https://github.com/netbox-community/netbox-docker)
+
 ```
 # git clone https://github.com/netbox-community/netbox-docker
 # cd netbox-docker
@@ -301,6 +302,7 @@ On a personal note, I use the docker image from [netbox-community/netbox-docker]
 ```
 
 For the linter and code formatting, you need to run:
+
 ```
 ruff check
 ruff format
